@@ -52,6 +52,7 @@ public class TreapImplementation implements Treap {
             }
         }else{
             root = node;
+            node.parent = null;
             }
         node.left = parent;
         parent.parent = node;
@@ -76,6 +77,7 @@ public class TreapImplementation implements Treap {
             }
         }else{
             root = node;
+            node.parent = null;
         }
         node.right = parent;
         parent.parent = node;
@@ -148,7 +150,27 @@ public class TreapImplementation implements Treap {
         if(node == null){
             return;
         }
-        
+        while(node.left != null || node.right != null){
+            if(node.left == null){
+                leftRotation(node.right);
+            }else if(node.right == null){
+                rightRotation(node.left);
+            }else if(node.left.priority < node.right.priority){
+                rightRotation(node.left);
+            }else{
+                leftRotation(node.right);
+            }
+        }
+        if(node.parent != null){
+            if(node.parent.left == node){
+                node.parent.left = null;
+            }else{
+                node.parent.right = null;
+            }
+        }else{
+            root = null;
+        }
+        node = null;
     }
 
     @Override
