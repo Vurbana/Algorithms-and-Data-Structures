@@ -1,5 +1,7 @@
 package com.fmi.ads.avl;
 
+import java.util.Stack;
+
 /**
  * Implement your solution here.
  * @author boris.strandjev
@@ -18,6 +20,22 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
 
 	@Override
 	public void finalize() throws Throwable {
+        Stack<Node<T>> stack = new Stack<>();
+        if(root != null){
+            stack.push(root);
+        }
+        while(!stack.empty()){
+            Node<T> node = stack.pop();
+            if(node.leftChild != null){
+                stack.push(node.leftChild);
+                node.leftChild = null;
+            }
+            if(node.rightChild != null){
+                stack.push(node.rightChild);
+                node.rightChild = null;
+            }
+            node.parent = null;
+        }
 	}
 
 	@Override
@@ -27,15 +45,278 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
 
 	@Override
 	public Node<T> findNode(T value) {
-		return null;
+        Node<T> current = root;
+        while(current != null){
+            if(current.value.compareTo(value) == 0){
+                return current;
+            }else if(value.compareTo(current.value) > 0){
+                current = current.rightChild;
+            }else{
+                current = current.leftChild;
+            }
+        }
+        return null;
 	}
 
 	@Override
 	public void insertNode(T value) {
+        Node<T> parent = null;
+        Node<T> current = root;
+        int cmp;
+        while(current != null){
+            parent = current;
+            cmp = value.compareTo(current.value);
+            if(cmp == 0){
+                return;
+            }else if(cmp < 0){
+                current = current.leftChild;
+            }else{
+                current = current.rightChild;
+            }
+        }
+        Node<T> node = new Node<>();
+        node.value = value;
+        node.parent = parent;
+        node.height = 1;
+        size++;
+        if(parent == null){
+            this.root = node;
+        }else if(node.value.compareTo(parent.value) < 0 ){
+            parent.leftChild = node;
+        }else{
+            parent.rightChild = node;
+        }
+        balanceTree(node);
+
 	}
+    private void balanceTree(Node<T> node){
+
+        while(node != root){
+            node.parent.height = maxHeight(node.parent) + 1;
+            if(isUnbalanced(node.parent)){
+                if(node.parent.leftChild == node) {
+
+                    if (isLeftBiggerThanRight(node)) {
+                        rightRotation(node);
+                    } else {
+                        Node<T> right = node.rightChild;
+                        leftRotation(right);
+                        rightRotation(right);
+                        node = right;
+                    }
+
+                }else{
+
+                    if(isLeftBiggerThanRight(node)){
+                        Node<T> left = node.leftChild;
+                        rightRotation(left);
+                        leftRotation(left);
+                        node = left;
+                    }else{
+                        leftRotation(node);
+                    }
+
+            }
+            }else{
+
+                node = node.parent;
+            }
+
+        }
+
+    }
+    private int maxHeight(Node<T> node){
+        int first=0, second=0;
+        if(node.leftChild != null){
+            first = node.leftChild.height;
+        }
+        if(node.rightChild != null){
+            second = node.rightChild.height;
+        }
+        return Math.max(first, second);
+    }
+    private boolean isLeftBiggerThanRight(Node<T> node){
+        int left = 0, right = 0;
+        if(node.leftChild != null){
+            left = node.leftChild.height;
+        }
+        if(node.rightChild != null){
+            right = node.rightChild.height;
+        }
+        if(left > right){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    private boolean isUnbalanced(Node<T> node){
+        int left = 0, right = 0, result;
+        if(node.leftChild != null){
+            left = node.leftChild.height;
+        }
+        if(node.rightChild != null){
+            right = node.rightChild.height;
+        }
+        result = Math.abs((left-right));
+        if(result > 1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    private boolean areEqualHeights(Node<T> node){
+        int left = 0, right = 0;
+        if(node.leftChild != null){
+            left = node.leftChild.height;
+        }
+        if(node.rightChild != null){
+            right = node.rightChild.height;
+        }
+        if(left == right){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
 	@Override
 	public void deleteNode(T value) {
+        Node<T> node = findNode(value);
+        if(node == null){
+            return;
+        }
+        if(node.rightChild == null && node.leftChild == null){
+            deleteWithNoChilds(node);
+        }else if(node.rightChild != null && node.leftChild != null){
+            Node<T> child = min(node.rightChild);
+            node.value = child.value;
+            if(child.rightChild == null){
+                deleteWithNoChilds(child);
+            }else{
+                deleteWithRightChild(child);
+            }
+        }else {
+            if(node.leftChild != null){
+                deleteWithLeftChild(node);
+            }else{
+                deleteWithRightChild(node);
+            }
+        }
 	}
+    private void deleteWithLeftChild(Node<T> node){
+        if(node.parent == null){
+            root = node.leftChild;
+            node.leftChild.parent = null;
+
+        }else{
+            if(node.parent.leftChild == node){
+                node.parent.leftChild = node.leftChild;
+
+            }else{
+                node.parent.rightChild = node.leftChild;
+            }
+            node.leftChild.parent = node.parent;
+        }
+        size--;
+        node.leftChild.height = 1;
+        balanceTree(node.leftChild);
+    }
+    private void deleteWithRightChild(Node<T> node){
+        if(node.parent == null){
+            root = node.rightChild;
+            node.rightChild.parent = null;
+        }else{
+            if(node.parent.leftChild == node){
+                node.parent.leftChild = node.rightChild;
+
+            }else{
+                node.parent.rightChild = node.rightChild;
+            }
+            node.rightChild.parent = node.parent;
+        }
+        size--;
+        node.rightChild.height = 1;
+        balanceTree(node.rightChild);
+    }
+    private void deleteWithNoChilds(Node<T> node){
+        if(node.parent == null){
+            root = null;
+
+        }else{
+            if(node.parent.leftChild == node){
+                node.parent.leftChild = null;
+            }else{
+                node.parent.rightChild = null;
+
+            }
+            node.parent.height = maxHeight(node.parent)+1;
+            balanceTree(node.parent);
+        }
+        size--;
+
+    }
+    private Node<T> min(Node<T> node){
+        while(node.leftChild != null){
+            node = node.leftChild;
+        }
+        return node;
+    }
+    private void leftRotation(Node<T> node) {
+        Node<T> grandParent = node.parent.parent;
+        Node<T> leftChild = node.leftChild;
+        Node<T> parent = node.parent;
+        if (grandParent != null) {
+            if (grandParent.leftChild == parent) {
+                grandParent.leftChild = node;
+                node.parent = grandParent;
+            } else {
+                grandParent.rightChild = node;
+                node.parent = grandParent;
+            }
+        }else{
+            root = node;
+            node.parent = null;
+        }
+        node.leftChild = parent;
+        parent.parent = node;
+        if(leftChild != null){
+            parent.rightChild = leftChild;
+            leftChild.parent = parent;
+        }else{
+            parent.rightChild = null;
+        }
+        parent.height = maxHeight(parent) + 1;
+        node.height = maxHeight(node)+1;
+    }
+    private void rightRotation(Node<T> node){
+        Node<T> rightChild = node.rightChild;
+        Node<T> grandParent = node.parent.parent;
+        Node<T> parent = node.parent;
+        if(grandParent != null){
+            if(grandParent.leftChild == parent){
+                grandParent.leftChild = node;
+                node.parent = grandParent;
+            }else{
+                grandParent.rightChild = node;
+                node.parent = grandParent;
+            }
+        }else{
+            root = node;
+            node.parent = null;
+        }
+        node.rightChild = parent;
+        parent.parent = node;
+
+        if(rightChild != null){
+            rightChild.parent = parent;
+            parent.leftChild = rightChild;
+        }else{
+            parent.leftChild = null;
+        }
+        parent.height = maxHeight(parent) + 1;
+        node.height = maxHeight(node)+1;
+    }
 
 }
