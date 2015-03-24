@@ -1,8 +1,8 @@
 package com.fmi.ads.avl;
 
-import java.util.ArrayDeque;
-import java.util.Stack;
 
+import java.util.Stack;
+import java.util.ArrayDeque;
 /**
  * Implement your solution here.
  * @author boris.strandjev
@@ -21,6 +21,7 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
 
 	@Override
 	public void finalize() throws Throwable {
+
         Stack<Node<T>> stack = new Stack<>();
         if(root != null){
             stack.push(root);
@@ -36,7 +37,10 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
                 node.rightChild = null;
             }
             node.parent = null;
+            node = null;
         }
+
+        super.finalize();
 	}
 
 	@Override
@@ -93,34 +97,34 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
 
 	}
     private void balanceTree(Node<T> node){
-        while(node != root){
-            node.parent.height = maxHeight(node.parent) + 1;
-            if(isUnbalanced(node.parent)){
-                if(node.parent.leftChild == node) {
-                        if (isLeftBiggerThanRight(node)) {
-                            rightRotation(node);
-                        } else {
-                            Node<T> right = node.rightChild;
-                            leftRotation(right);
-                            rightRotation(right);
-                            node = right;
-                        }
-                }else {
-                        if (isLeftBiggerThanRight(node)) {
-                            Node<T> left = node.leftChild;
-                            rightRotation(left);
-                            leftRotation(left);
-                            node = left;
-                        } else {
-                            leftRotation(node);
-                        }
-                    }
-            }else{
-                node = node.parent;
+        while(node != null){
+            updateHeight(node);
+            int balance = getBalance(node);
+            if(balance == 2 && getBalance(node.leftChild) >= 0){
+                rightRotation(node.leftChild);
+                return;
             }
+            if(balance == 2 && getBalance(node.leftChild) == -1){
+                Node<T> rightChild = node.leftChild.rightChild;
+                leftRotation(rightChild);
+                rightRotation(rightChild);
+                return;
+            }
+            if(balance == -2 && getBalance(node.rightChild) <= 0){
+                leftRotation(node.rightChild);
+                return;
+            }
+            if(balance == -2 && getBalance(node.rightChild) == 1){
+                Node<T> leftChild = node.rightChild.leftChild;
+                rightRotation(leftChild);
+                leftRotation(leftChild);
+                return;
+            }
+            node = node.parent;
+
         }
     }
-    private int maxHeight(Node<T> node){
+    private  void updateHeight(Node<T> node){
         int first=0, second=0;
         if(node.leftChild != null){
             first = node.leftChild.height;
@@ -128,52 +132,19 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
         if(node.rightChild != null){
             second = node.rightChild.height;
         }
-        return Math.max(first, second);
+        node.height = Math.max(first, second) + 1;
     }
-    private boolean isLeftBiggerThanRight(Node<T> node){
-        int left = 0, right = 0;
-        if(node.leftChild != null){
-            left = node.leftChild.height;
+    private int getBalance(Node<T> node){
+        if(node == null){
+            return 0;
         }
-        if(node.rightChild != null){
-            right = node.rightChild.height;
-        }
-        if(left > right){
-            return true;
-        }else{
-            return false;
-        }
-
+        return getHeight(node.leftChild) - getHeight(node.rightChild);
     }
-
-    private boolean isUnbalanced(Node<T> node){
-        int left = 0, right = 0, result;
-        if(node.leftChild != null){
-            left = node.leftChild.height;
+    private int getHeight(Node<T> node){
+        if(node == null){
+            return 0;
         }
-        if(node.rightChild != null){
-            right = node.rightChild.height;
-        }
-        result = Math.abs((left-right));
-        if(result > 1){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    private boolean areEqualHeights(Node<T> node){
-        int left = 0, right = 0;
-        if(node.leftChild != null){
-            left = node.leftChild.height;
-        }
-        if(node.rightChild != null){
-            right = node.rightChild.height;
-        }
-        if(left == right){
-            return true;
-        }else{
-            return false;
-        }
+        return node.height;
     }
 
 	@Override
@@ -182,6 +153,7 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
         if(node == null){
             return;
         }
+        size--;
         if(node.rightChild == null && node.leftChild == null){
             deleteWithNoChilds(node);
         }else if(node.rightChild != null && node.leftChild != null){
@@ -201,10 +173,10 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
         }
 	}
     private void deleteWithLeftChild(Node<T> node){
+
         if(node.parent == null){
             root = node.leftChild;
             node.leftChild.parent = null;
-
         }else{
             if(node.parent.leftChild == node){
                 node.parent.leftChild = node.leftChild;
@@ -213,31 +185,25 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
                 node.parent.rightChild = node.leftChild;
             }
             node.leftChild.parent = node.parent;
-            node.leftChild.height = maxHeight(node.leftChild)+1;
+            updateHeight(node.leftChild);
             balanceTree(node.leftChild);
         }
-        size--;
-
     }
     private void deleteWithRightChild(Node<T> node){
+
         if(node.parent == null){
             root = node.rightChild;
             node.rightChild.parent = null;
-
-
-        }else{
-            if(node.parent.leftChild == node){
+        }else {
+            if (node.parent.leftChild == node) {
                 node.parent.leftChild = node.rightChild;
-
-            }else{
+            } else {
                 node.parent.rightChild = node.rightChild;
             }
             node.rightChild.parent = node.parent;
-            node.rightChild.height = maxHeight(node.rightChild)+1;
+            updateHeight(node.rightChild);
             balanceTree(node.rightChild);
         }
-        size--;
-
     }
     private void deleteWithNoChilds(Node<T> node){
         if(node.parent == null){
@@ -245,7 +211,7 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
         }else{
             if(node.parent.leftChild == node){
                 node.parent.leftChild = null;
-                node.parent.height = maxHeight(node.parent)+1;
+                updateHeight(node.parent);
                 if(node.parent.rightChild != null){
                     balanceTree(node.parent.rightChild);
                 }else{
@@ -253,22 +219,18 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
                 }
             }else{
                 node.parent.rightChild = null;
-                node.parent.height = maxHeight(node.parent)+1;
+                updateHeight(node.parent);
                 if(node.parent.leftChild != null){
                     balanceTree(node.parent.leftChild);
                 }else{
                     balanceTree(node.parent);
                 }
             }
+
         }
-        size--;
+
     }
-    private Node<T> min(Node<T> node){
-        while(node.leftChild != null){
-            node = node.leftChild;
-        }
-        return node;
-    }
+
     private void leftRotation(Node<T> node) {
         Node<T> grandParent = node.parent.parent;
         Node<T> leftChild = node.leftChild;
@@ -293,8 +255,9 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
         }else{
             parent.rightChild = null;
         }
-        parent.height = maxHeight(parent) + 1;
-        node.height = maxHeight(node)+1;
+        updateHeight(parent);
+        updateHeight(node);
+
     }
     private Node<T> max(Node<T> node){
         while(node.rightChild != null){
@@ -327,8 +290,9 @@ public class AVLTree<T extends Comparable<T>> extends AVLTreeInterface<T> {
         }else{
             parent.leftChild = null;
         }
-        parent.height = maxHeight(parent) + 1;
-        node.height = maxHeight(node)+1;
+        updateHeight(parent);
+        updateHeight(node);
+
     }
     public void display(){
 
