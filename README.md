@@ -1,2 +1,2 @@
 # Algorithms-and-Data-Structures
-Implementations of various algorithms in Java and C++.
+Implementations of various Algorithms and Data structures in Java and C++.
