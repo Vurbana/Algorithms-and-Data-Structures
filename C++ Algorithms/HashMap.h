@@ -13,14 +13,10 @@
 
 #ifndef __HASHMAP_H__
 #define __HASHMAP_H__
-#include<iostream>
 #include <string>
 #include <exception>
-
 #include<vector>
-#include<cmath>
 #include<list>
-#include<cstdio>
 #include<algorithm>
 
 template<typename V>
@@ -104,7 +100,7 @@ public:
      */
     bool contains(const std::string & key) const {
         const auto & list = hashList[my_hash(key)];
-        for (auto el : list) {
+        for (auto &el : list) {
             if (el.first == key) {
                 return true;
             }
@@ -139,8 +135,8 @@ public:
         }
         list.push_back(std::make_pair(key, value));
         elements_count++;
-        double factor = (double) (elements_count) / (double) hashList.capacity();
-        factor = int(factor * sd + (factor < 0 ? -0.5 : 0.5)) / sd;
+        double factor =  (double)(elements_count) / (double) hashList.capacity();
+        
         if (factor >= 0.75) {
             if (hashList.capacity() == max_buckets) {
                 return;
@@ -170,8 +166,8 @@ public:
         if (listIterator != list.end()) {
             list.erase(listIterator);
             elements_count--;
-            double factor = (double) (elements_count) / (double) hashList.capacity();
-            factor = int(factor * sd + (factor < 0 ? -0.5 : 0.5)) / sd;
+            double factor =  (double)(elements_count) / (double) hashList.capacity();
+            
             if (factor <= 0.25) {
                 resize(hashList.capacity() / 2);
             }
@@ -210,7 +206,7 @@ private:
     int elements_count;
     int max_buckets;
     int min_buckets;
-    const double sd = 100;
+    
 
     bool is_prime(int n) {
         if (n < 2) {
@@ -240,6 +236,7 @@ private:
         return n;
     }
     
+    
 
      int my_hash(const std::string & str) const {
         int ret = 1;
@@ -254,10 +251,9 @@ private:
  
     
     void resize(int numBuckets) {
-
-        std::vector<std::list<std::pair<std::string, V> > > oldList = std::move(hashList);
+        std::vector<std::list<std::pair<std::string, V> > > oldList( std::move(hashList));
         hashList.resize(numBuckets);
-        clear();
+        elements_count = 0; 
         for (int i = 0; i < oldList.size(); i++) {
             auto &list = oldList[i];
             if (!list.empty()) {
