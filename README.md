@@ -1,2 +1,15 @@
 # Algorithms-and-Data-Structures
-Implementations of various Algorithms and Data structures in Java and C++.
+
+Here are some of my implementations of different algorithms and data structures.
+
+* Basic Structures
+  - Linked List
+  - Stack
+  - Queue
+* Binary Search Tree
+* AVL
+* Skew Heap
+* Segment Tree with lazy propagation
+* Splay Tree
+* Treap
+
