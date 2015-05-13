@@ -1,6 +1,6 @@
 # Algorithms-and-Data-Structures
 
-Here are some of my implementations of different algorithms and data structures.
+Here are the java implementations of different algorithms and data structures.
 
 * Basic Structures
   - [Linked List](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/Java%20Algorithms%20and%20Data%20Structures/basic/structures/SingleLinkedList.java)
@@ -13,3 +13,7 @@ Here are some of my implementations of different algorithms and data structures.
 * [Splay Tree](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/Java%20Algorithms%20and%20Data%20Structures/splayTree/SplayTree.java)
 * [Treap](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/Java%20Algorithms%20and%20Data%20Structures/treap/TreapImplementation.java)
 
+And here are the C++ implementations:
+
+* [HashMap](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/C%2B%2B%20Algorithms/HashMap.h)
+* [Sorting Algorithms](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/C%2B%2B%20Algorithms/sort.h)
