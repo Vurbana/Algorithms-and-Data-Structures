@@ -12,6 +12,7 @@ Here are the java implementations of different algorithms and data structures.
 * [Segment Tree with lazy propagation](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/Java%20Algorithms%20and%20Data%20Structures/segmentTree/SegmentTree.java)
 * [Splay Tree](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/Java%20Algorithms%20and%20Data%20Structures/splayTree/SplayTree.java)
 * [Treap](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/Java%20Algorithms%20and%20Data%20Structures/treap/TreapImplementation.java)
+* [Prefix Trie](https://github.com/Vurbanov/Algorithms-and-Data-Structures/tree/master/Java%20Algorithms%20and%20Data%20Structures/trie)
 
 And here are the C++ implementations:
 
