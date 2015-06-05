@@ -18,3 +18,4 @@ And here are the C++ implementations:
 
 * [HashMap](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/C%2B%2B%20Algorithms/HashMap.h)
 * [Sorting Algorithms](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/C%2B%2B%20Algorithms/sort.h)
+* [Suffix Array](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/C%2B%2B%20Algorithms/SuffixArray.h)
