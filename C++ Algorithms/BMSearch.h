@@ -8,7 +8,6 @@
 #ifndef BMSEARCH_H
 #define	BMSEARCH_H
 #include<string>
-#include<cstring>
 #include<vector>
 #include<cstdlib> 
 #include<algorithm>
@@ -59,8 +58,10 @@ public:
      * if there isn't any match.
      */
     int search(const string& text) {
-        int i = 0, j;
-        
+        if(text.size() < pattern.size()){
+            return -1;
+        }
+        int i = 0, j;  
         while (i <= (text.size() - pattern.size())) {
             j = pattern.size() - 1;
             while (j >= 0 && pattern[j] == text[i + j]) j--;
@@ -81,8 +82,10 @@ public:
      */
     vector<int> searchAll(const string& text) {
         vector<int> vec;
+        if(text.size() < pattern.size()){
+            return vec;
+        }
         int i = 0, j;
-        
         while (i <= (text.size() - pattern.size())) {
             j = pattern.size() - 1;
             while (j >= 0 && pattern[j] == text[i + j]){

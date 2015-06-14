@@ -51,6 +51,9 @@ public:
      * if there isn't any match.
      */
     int search(const string& text){
+        if(text.size() < pattern.size()){
+            return -1;
+        }
         int i = 0, j = 0;
         while(i < text.size()){
             while(j >= 0 && text[i] != pattern[j]){
@@ -72,6 +75,9 @@ public:
     vector<int> searchAll(const string& text){
         int i = 0, j = 0;
         vector<int> indices;
+        if(text.size() < pattern.size()){
+            return indices;
+        }
         while( i < text.size()){
             while( j >= 0 && text[i] != pattern[j]){
                 j = border[j];
