@@ -21,3 +21,5 @@ And here are the C++ implementations:
 * [Suffix Array](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/C%2B%2B%20Algorithms/SuffixArray.h)
 * [Knuth-Morris-Pratt string search algorithm](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/C%2B%2B%20Algorithms/KMPSearch.h)
 * [Boyer–Moore string search algorithm](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/C%2B%2B%20Algorithms/BMSearch.h)
+* [Binary Search Tree](https://github.com/Vurbanov/Algorithms-and-Data-Structures/blob/master/C%2B%2B%20Algorithms/BinarySearchTree.h)
+
